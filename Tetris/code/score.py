@@ -1,4 +1,4 @@
-from settin import *
+from settings import *
 from os.path import join
 
 class Score:

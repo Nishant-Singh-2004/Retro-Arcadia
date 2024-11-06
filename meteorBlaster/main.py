@@ -4,8 +4,8 @@ from random import randint ,uniform
 class Player(pygame.sprite.Sprite):
     def __init__(self, groups):
         super().__init__(groups)
-        self.image=pygame.image.load(join('images','player.png')).convert_alpha()
-        self.rect =self.image.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
+        self.image=pygame.image.load(join('meteorBlaster','images','player.png')).convert_alpha()
+        self.rect =self.image.get_rect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.player_direction = pygame.math.Vector2()
         self.player_speed = 400
         #cooldown 
@@ -37,16 +37,16 @@ class Player(pygame.sprite.Sprite):
         self.laser_timer()
 
 class Star(pygame.sprite.Sprite):
-    def __init__(self, groups,playing_star):
+    def __init__(self, groups,playing_star): 
         super().__init__(groups)
         self.image =playing_star
-        self.rect = self.image.get_frect(center=(randint(0,WINDOW_WIDTH),randint(0,WINDOW_HEIGHT)))
+        self.rect = self.image.get_rect(center=(randint(0,WINDOW_WIDTH),randint(0,WINDOW_HEIGHT)))
 
 class Laser(pygame.sprite.Sprite):
     def __init__(self,surf,pos,groups):
         super().__init__(groups)
         self.image=surf
-        self.rect = self.image.get_frect(midbottom=pos)
+        self.rect = self.image.get_rect(midbottom=pos)
     def update(self,dt):
         self.rect.centery-=400*dt
         if self.rect.bottom<0:
@@ -56,9 +56,9 @@ class Meteor(pygame.sprite.Sprite):
     def __init__(self,surf,pos,groups):
         super().__init__(groups)
         self.image = surf
-        self.rect=self.image.get_frect(center=pos)
-        self.direction = pygame.Vector2(uniform(-0.5,0.5),1)
-        self.speed = randint(400,500)
+        self.rect=self.image.get_rect(center=pos)
+        self.direction = pygame.Vector2(uniform(1,1),1)
+        self.speed = randint(200,300)
     def update(self,dt):
         self.rect.center +=self.direction * self.speed * dt
         if self.rect.top>WINDOW_HEIGHT:
@@ -68,7 +68,7 @@ class Meteor(pygame.sprite.Sprite):
 def display_score():
     current_time =pygame.time.get_ticks()//100
     text_surf =font.render(str(current_time),True,(240,240,240))
-    text_rect=text_surf.get_frect(midbottom=(WINDOW_WIDTH/2,WINDOW_HEIGHT-50))
+    text_rect=text_surf.get_rect(midbottom=(WINDOW_WIDTH/2,WINDOW_HEIGHT-50))
     display_surface.blit(text_surf,text_rect)
     pygame.draw.rect(display_surface,(240,240,240),text_rect.inflate(20,20),5,10)
 
@@ -93,11 +93,11 @@ pygame.display.set_caption("space shooter")
 running = True
 
 #imports
-playing_star=pygame.image.load(join('images','star.png')).convert_alpha()
-playing_meteor = pygame.image.load(join('images','meteor.png')).convert_alpha()
-playing_laser = pygame.image.load(join('images','laser.png')).convert_alpha()
-font =pygame.font.Font(join("images","Oxanium-Bold.ttf"),30)
-explosion_frames = [pygame.image.load(join("images","explosion",f"{i}.png")).convert_alpha() for i in range(21)]
+playing_star=pygame.image.load(join('meteorBlaster','images','star.png')).convert_alpha()
+playing_meteor = pygame.image.load(join('meteorBlaster','images','meteor.png')).convert_alpha()
+playing_laser = pygame.image.load(join('meteorBlaster','images','laser.png')).convert_alpha()
+font =pygame.font.Font(join('meteorBlaster',"images","Oxanium-Bold.ttf"),30)
+explosion_frames = [pygame.image.load(join('meteorBlaster',"images","explosion",f"{i}.png")).convert_alpha() for i in range(21)]
 
 #sprites
 all_sprites = pygame.sprite.Group()

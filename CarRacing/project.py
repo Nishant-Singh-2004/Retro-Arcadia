@@ -434,3 +434,4 @@ def cargame():
     game_loop()
     pygame.quit()
     quit()
+cargame()

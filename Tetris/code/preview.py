@@ -1,4 +1,4 @@
-from settin import * 
+from settings import * 
 from pygame.image import load
 from os import path
 

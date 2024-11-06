@@ -1,4 +1,4 @@
-from settin import *
+from settings import *
 from random import choice
 from sys import exit
 from os.path import join
