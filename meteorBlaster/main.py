@@ -90,7 +90,7 @@ class Meteor(pygame.sprite.Sprite):
         self.rect.center +=self.direction * self.speed * dt
         if WINDOW_HEIGHT<=self.rect.top<=WINDOW_HEIGHT+100 and not(Player_Hit):
             self.kill()
-            score +=1
+            # score +=1
 
 
 #display score:
@@ -106,6 +106,7 @@ def display_score():
 def collision():
     global running
     global Player_Hit
+    global score
     collision_player=pygame.sprite.spritecollide(player,meteor_sprites,True,pygame.sprite.collide_mask)
     if collision_player:
         Player_Hit=True
@@ -119,44 +120,54 @@ def collision():
         if spiritted_laser:
             explosion_sound.play()
             laser.kill()
-
+            score += 1
 #reseting game after being hit
 def reset_game():
         global score
         global Player_Hit
         global running
+
+        # score = 0
+        Player_Hit = False
         #timer
 
         display_surface.fill("gray0")
         score_title =large_text.render("Your Score : "+ str(score), True, (255, 255, 255))
-        #spacebar_use = font.render("Press spacebar: Start Game",True, (255, 255, 255))
-        #esc_use = font.render("Press ESC: End game",True, (255, 255, 255))
+        spacebar_use = font.render("Press spacebar: Start Game",True, (255, 255, 255))
+        esc_use = font.render("Press ESC: End game",True, (255, 255, 255))
         score=0
 
         text_rect=score_title.get_frect(midbottom=(WINDOW_WIDTH/2,WINDOW_HEIGHT/2-60))
-        #text_spacbar = spacebar_use.get_frect(midbottom=((WINDOW_WIDTH/2,WINDOW_HEIGHT/2+30)))
-        #text_esc = esc_use.get_frect(midbottom=((WINDOW_WIDTH/2,WINDOW_HEIGHT/2+120)))
+        text_spacbar = spacebar_use.get_frect(midbottom=((WINDOW_WIDTH/2,WINDOW_HEIGHT/2+30)))
+        text_esc = esc_use.get_frect(midbottom=((WINDOW_WIDTH/2,WINDOW_HEIGHT/2+120)))
 
         pygame.draw.rect(display_surface,(240,240,240),text_rect.inflate(20,20),5,10)
-        #pygame.draw.rect(display_surface,(240,240,240),text_spacbar.inflate(20,20),5,10)
-        #pygame.draw.rect(display_surface,(240,240,240),text_esc.inflate(20,20),5,10)
+        pygame.draw.rect(display_surface,(240,240,240),text_spacbar.inflate(20,20),5,10)
+        pygame.draw.rect(display_surface,(240,240,240),text_esc.inflate(20,20),5,10)
 
         display_surface.blit(score_title,text_rect)
-        #display_surface.blit(spacebar_use,text_spacbar)
-        #display_surface.blit(esc_use,text_esc)
+        display_surface.blit(spacebar_use,text_spacbar)
+        display_surface.blit(esc_use,text_esc)
         pygame.display.update()
 
-        pygame.time.delay(3000)
-        Player_Hit=False
-        game_music.play()
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        waiting = False 
+                        game_music.play() 
+                    elif event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        exit()
+        score = 0
         
-
-
-
-        
-
 #general setup 
 pygame.init()
+
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280,720
 display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
@@ -166,6 +177,7 @@ running = True
 #imports
 #images
 playing_star=pygame.image.load(join('meteorBlaster','images','star.png')).convert_alpha()
+
 playing_meteor = pygame.image.load(join('meteorBlaster','images','meteor.png')).convert_alpha()
 playing_laser = pygame.image.load(join('meteorBlaster','images','laser.png')).convert_alpha()
 #fonts
@@ -201,6 +213,7 @@ player =Player(all_sprites)
 meteor_event = pygame.event.custom_type()
 pygame.time.set_timer(meteor_event,300)
 
+
 while running:
     dt=clock.tick()/1000
     for event in pygame.event.get():
@@ -211,6 +224,7 @@ while running:
             x,y = randint(0,WINDOW_WIDTH),randint(-200,-100)
             Meteor(playing_meteor,(x,y),(all_sprites,meteor_sprites))
     display_surface.fill("gray0")
+
     #update
     all_sprites.update(dt)
     #collision
