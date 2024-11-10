@@ -168,7 +168,7 @@ def reset_game():
 #general setup 
 pygame.init()
 
-WINDOW_WIDTH, WINDOW_HEIGHT = 1280,720
+WINDOW_WIDTH, WINDOW_HEIGHT = 800,400
 display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 pygame.display.set_caption("space shooter")
