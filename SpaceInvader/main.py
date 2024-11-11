@@ -5,12 +5,14 @@ from pygame import mixer
 
 def start_spaceInvader():
     pygame.init()
-    screen = pygame.display.set_mode((800, 600))
+    screen = pygame.display.set_mode((800, 600)) #prints the screen
 
+    # loading the background image and playing the game music
     background = pygame.image.load('SpaceInvader/bg.jpg')
     mixer.music.load('SpaceInvader/background.wav')
-    mixer.music.play(-1)
+    mixer.music.play(-1)   #-1 plays the music infinitely
 
+    #showing game icon
     pygame.display.set_caption("Space Invaders")
     icon = pygame.image.load('SpaceInvader/ufo (1).png')
     pygame.display.set_icon(icon)
@@ -25,7 +27,7 @@ def start_spaceInvader():
     enemyY = []
     enemyX_change = []
     enemyY_change = []
-    num_of_enemies = 6
+    num_of_enemies = 11
 
     for i in range(num_of_enemies):
         enemyImg.append(pygame.image.load('SpaceInvader/enemy.png'))
