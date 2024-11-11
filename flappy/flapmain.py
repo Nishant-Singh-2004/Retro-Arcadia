@@ -105,7 +105,7 @@ def flap():
     pipe_surface = pygame.transform.scale2x(pipe_surface)
     pipe_list = []
     SPAWNPIPE = pygame.USEREVENT
-    pygame.time.set_timer(SPAWNPIPE,1200)
+    pygame.time.set_timer(SPAWNPIPE,1800)
     pipe_height = [200, 300, 400, 500]
 
     game_over_surface = pygame.transform.scale2x(pygame.image.load('flappy/assets/message.png').convert_alpha())
@@ -167,7 +167,7 @@ def flap():
             pipe_list = move_pipes(pipe_list)
             draw_pipes(pipe_list)
 
-            score += 0.01
+            score += 0.008
             score_display('main_game')
         
         else:
