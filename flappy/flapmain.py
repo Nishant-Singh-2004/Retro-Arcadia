@@ -167,7 +167,7 @@ def flap():
             pipe_list = move_pipes(pipe_list)
             draw_pipes(pipe_list)
 
-            score += 0.008
+            score += 0.005
             score_display('main_game')
         
         else:
