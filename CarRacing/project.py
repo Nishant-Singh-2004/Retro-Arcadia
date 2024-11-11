@@ -1,4 +1,5 @@
 import pygame   #import pygame library
+import sys
 def cargame():
     pygame.init()
 
@@ -13,6 +14,7 @@ def cargame():
     red2 = (255,0,0)
     blue = (0,0,100)
     blue2 = (0,0,255)
+    strip_speed = 10  # Speed at which the strips move downwards
 
     screen = pygame.display.set_mode((width,height))  #screen size
 
@@ -82,6 +84,7 @@ def cargame():
             screen.blit(text_surface,text_rect)
 
             pygame.display.update()
+            clock.tick(60)
 
     def pause_page(): #defining pause page
         pause = True
@@ -229,17 +232,22 @@ def cargame():
         screen.blit(obs_pic,(obs_x,obs_y))
         
     def background():  #adding images to the background
-        screen.blit(grass,(0,0))
-        screen.blit(grass,(700,0))
-        screen.blit(yellow_strip,(377,0))
-        screen.blit(yellow_strip,(377,100))
-        screen.blit(yellow_strip,(377,200))
-        screen.blit(yellow_strip,(377,300))
-        screen.blit(yellow_strip,(377,400))
-        screen.blit(yellow_strip,(377,500))
-        screen.blit(yellow_strip,(377,600))
-        screen.blit(strip,(120,0))
-        screen.blit(strip,(679,0))
+        # Draw grass areas
+        screen.blit(grass, (0, 0))
+        screen.blit(grass, (700, 0))
+
+        # Draw moving yellow strips
+        for i in range(len(yellow_strip_positions)):
+            screen.blit(yellow_strip, (377, yellow_strip_positions[i]))  # Draw each strip at its Y-position
+            yellow_strip_positions[i] += strip_speed  # Move strip downward
+
+            # Reset strip to top if it goes off-screen
+            if yellow_strip_positions[i] > height:
+                yellow_strip_positions[i] = -100  # Reset to just above the screen top
+
+        # Draw road boundary strips
+        screen.blit(strip, (120, 0))
+        screen.blit(strip, (679, 0))
 
     def countdown_background():
         # for event in pygame.event.get():
@@ -268,6 +276,8 @@ def cargame():
 
     def countdown():
         countdown = True
+        count_numbers = ["3", "2", "1", "GO!!!"]  # Countdown sequence
+
         while countdown:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -275,54 +285,22 @@ def cargame():
                     quit()
                     sys.exit()
 
-            screen.fill((119,118,110))
-            countdown_background()
-            large_text = pygame.font.Font("freesansbold.ttf",115)
-            text_surface,text_rect = text_object("3",large_text)
-            text_rect.center = ((width/2),(height/2))
-            screen.blit(text_surface,text_rect)
-            pygame.display.update()
-            clock.tick(1)
+            for number in count_numbers:
+                screen.fill((119, 118, 110))  # Background color
+                countdown_background()        # Draw countdown background
+                
+                # Render countdown text
+                large_text = pygame.font.Font("freesansbold.ttf", 115)
+                text_surface, text_rect = text_object(number, large_text)
+                text_rect.center = (width / 2, height / 2)
+                screen.blit(text_surface, text_rect)
+                
+                pygame.display.update()
+                time.sleep(1)  # Pause for 1 second between numbers
 
-            screen.fill((119,118,110))
-            countdown_background()
-            large_text = pygame.font.Font("freesansbold.ttf",115)
-            text_surface,text_rect = text_object("3",large_text)
-            text_rect.center = ((width/2),(height/2))
-            screen.blit(text_surface,text_rect)
-            pygame.display.update()
-            clock.tick(1)
-
-            screen.fill((119,118,110))
-            countdown_background()
-            large_text = pygame.font.Font("freesansbold.ttf",115)
-            text_surface,text_rect = text_object("2",large_text)
-            text_rect.center = ((width/2),(height/2))
-            screen.blit(text_surface,text_rect)
-            pygame.display.update()
-            clock.tick(1)
-
-            screen.fill((119,118,110))
-            countdown_background()
-            large_text = pygame.font.Font("freesansbold.ttf",115)
-            text_surface,text_rect = text_object("1",large_text)
-            text_rect.center = ((width/2),(height/2))
-            screen.blit(text_surface,text_rect)
-            pygame.display.update()
-            clock.tick(1)
-
-            screen.fill((119,118,110))
-            countdown_background()
-            large_text = pygame.font.Font("freesansbold.ttf",115)
-            text_surface,text_rect = text_object("GO!!!",large_text)
-            text_rect.center = ((width/2),(height/2))
-            screen.blit(text_surface,text_rect)
-            pygame.display.update()
-            clock.tick(1)
-
-            countdown = False
-
-            game_loop()        
+            countdown = False  # End countdown after displaying all numbers
+            game_loop()        # Start the game loop
+    
 
     def score_card(car_passed,score):
         font = pygame.font.SysFont(None,35)
@@ -349,6 +327,8 @@ def cargame():
         car_passed = 0
         score = 0
         level = 0
+        global yellow_strip_positions
+        yellow_strip_positions = [0, 100, 200, 300, 400, 500, 600]  # Initial strip positions
 
         # countdown_background()
 
@@ -383,6 +363,7 @@ def cargame():
             if x > 679 - car_width or x < 123:  #restricting the car movement
                 screen.blit(render_text,(150,200))
                 pygame.display.update()
+                clock.tick(60)
 
                 time.sleep(3)
                 game_loop()
@@ -400,15 +381,18 @@ def cargame():
                     level_text = myfont.render("Level: " + str(level), 1, (0,0,0))
                     screen.blit(level_text,(265,50))
                     pygame.display.update()
+                    clock.tick(60)
                     time.sleep(3)
 
             if y < obs_y + enemy_height:  #crashing of enemy
-                if x > obs_x and x < obs_x + car_width or x + car_width > obs_x and x + car_width < obs_x + car_width:
-                    print(x,obs_x,enemy_width)
-                    screen.blit(render_text,(150,200))
-                    pygame.display.update()
-                    time.sleep(3)
-                    game_loop()
+                # if x > obs_x and x < obs_x + car_width or x + car_width > obs_x and x + car_width < obs_x + car_width:
+                if x < obs_x + enemy_width and x + car_width > obs_x:
+                    if y < obs_y + enemy_height and y + car_height > obs_y:# Collision detected
+                        screen.blit(render_text,(150,200))
+                        pygame.display.update()
+                        clock.tick(60)
+                        time.sleep(3)
+                        game_loop()
 
             mouse = pygame.mouse.get_pos()  #creating pause button
 
@@ -427,7 +411,7 @@ def cargame():
             screen.blit(text_surface,text_rect)
 
             pygame.display.update()  #updating the game 
-            clock.tick(100)  #to slow down the speed of car
+            clock.tick(60)  #to slow down the speed of car
 
 
     intro_loop()
